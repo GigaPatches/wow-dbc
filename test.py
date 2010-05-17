@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 from dbc import DBCFile
 from dbc.dtypes import UInt32, String, Int32
 
