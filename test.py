@@ -2,7 +2,6 @@
 
 from dbc import *
 
-words = ChatProfanityDBC('ChatProfanity.dbc').read()
-for word in words:
-    if word['lang'] in (-1, 0):
-        print word['word']
+data = GameTipsDBC('GameTips.dbc').read()
+for tip in data:
+    print tip['RefName']

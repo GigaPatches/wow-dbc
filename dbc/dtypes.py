@@ -4,7 +4,7 @@
 """
 
 class Base(object):
-    def __init__(self, name):
+    def __init__(self, name=''):
         self.name = name
 
 class Int32(Base):
@@ -24,3 +24,8 @@ class Float(Base):
 
 class String(Base):
     c = 'I'
+
+class Array(Base):
+    def __init__(self, name, _type, count):
+        super(Array, self).__init__(name)
+        self.items = [_type()] * count
