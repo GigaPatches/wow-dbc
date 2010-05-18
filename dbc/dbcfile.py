@@ -12,11 +12,12 @@ class DBCFile(object):
     
     header_struct = Struct('4s4i')
 
-    def __init__(self, filename, skele=None):
+    def __init__(self, filename, skele=None, verbose=False):
         self.filename = filename
+        self.verbose = verbose
         if not hasattr(self, 'skeleton'):
             self.skeleton = skele
-        self.__create_struct()  
+        self.__create_struct()
     
     def read(self):
         if not os.path.exists(self.filename):
@@ -31,8 +32,9 @@ class DBCFile(object):
             f.close()
             raise Exception('Invalid file type')
 
-        print '%s Info:' % (self.filename,)
-        print 'Records: %s, Fields: %s, Record Size: %s, String Block: %s' % \
+        if self.verbose:
+            print '%s Info:' % (self.filename,)
+            print 'Records: %s, Fields: %s, Record Size: %s, String Block: %s' % \
                 (records, fields, record_size, string_block_size)
 
         if not self.struct:
@@ -46,13 +48,17 @@ class DBCFile(object):
                                                                  record_size))
 
         self.string_offset = 20 + records * record_size
-        self.string_end = self.string_offset + string_block_size
+        self.string_block_size = string_block_size
         
         output = []
         for i in  xrange(records):
+            if self.verbose:
+                print '\rReading record %d of %s.' % (1 + i, records),
             data = self.struct.unpack(f.read(record_size))
             output.append(self.__process_record(data))
             f.seek(20 + i * record_size)
+        if self.verbose:
+            print
         f.close()
 
         return output
@@ -60,7 +66,7 @@ class DBCFile(object):
     def __create_struct(self):
         "Creates a Struct from the Skeleton"
         if self.skeleton:
-            s = []
+            s = ['<']
             for item in self.skeleton:
                 if isinstance(item, Array):
                     s.extend(x.c for x in item.items)
@@ -92,10 +98,12 @@ class DBCFile(object):
         output = {}
         name = _type.name if _type.name else 0
         if isinstance(_type, String):
-            if data == 0 or data >= self.string_end:
+            if data == 0 or data >= self.string_block_size:
                 output[name] = unicode('', 'utf-8')
             else:
-                self.__file.seek(self.string_offset + data)
+                self.__file.seek(self.string_offset + data - 1)
+                if self.__file.read(1) != '\0':
+                    raise Exception('Invalid String for %s' % (str(name),))
                 s = ''
                 while '\0' not in s:
                     s += self.__file.read(128)
