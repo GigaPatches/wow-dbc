@@ -1,14 +1,6 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
-from dbc import DBCFile
-from dbc.dtypes import UInt32, String, Int32
-
-class ChatProfanityDBC(DBCFile):
-    skeleton = [
-        UInt32('id'),
-        String('word'),
-        Int32('lang'), #TODO: Implement Enum?
-    ]
+from dbc import *
 
 words = ChatProfanityDBC('ChatProfanity.dbc').read()
 for word in words:
