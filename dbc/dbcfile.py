@@ -33,7 +33,7 @@ class DBCFile(object):
             raise Exception('Invalid file type')
 
         if self.verbose:
-            print '%s Info:' % (self.filename,)
+            print 'Processing %s' % (self.filename,)
             print 'Records: %s, Fields: %s, Record Size: %s, String Block: %s' % \
                 (records, fields, record_size, string_block_size)
 
@@ -44,16 +44,16 @@ class DBCFile(object):
 
         if self.struct.size != record_size:
             f.close()
-            raise Exception('Struct size mismatch (%s != %s)' % (self.struct.size,
+            raise Exception('Struct size mismatch (%d != %d)' % (self.struct.size,
                                                                  record_size))
 
         self.string_offset = 20 + records * record_size
         self.string_block_size = string_block_size
-        
         output = []
         for i in  xrange(records):
             if self.verbose:
-                print '\rReading record %d of %s.' % (1 + i, records),
+                print '\rReading records %d of %d (%d%%).' % \
+                        (i, records, float(i) / records * 100),
             data = self.struct.unpack(f.read(record_size))
             output.append(self.__process_record(data))
             f.seek(20 + i * record_size)
