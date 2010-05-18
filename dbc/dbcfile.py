@@ -42,7 +42,8 @@ class DBCFile(object):
 
         if self.struct.size != record_size:
             f.close()
-            raise Exception('Struct size mismatch')
+            raise Exception('Struct size mismatch (%s != %s)' % (self.struct.size,
+                                                                 record_size))
 
         self.string_offset = 20 + records * record_size
         self.string_end = self.string_offset + string_block_size
@@ -50,7 +51,7 @@ class DBCFile(object):
         output = []
         for i in  xrange(records):
             data = self.struct.unpack(f.read(record_size))
-            output.append(self.__process(data))
+            output.append(self.__process_record(data))
             f.seek(20 + i * record_size)
         f.close()
 
@@ -69,23 +70,38 @@ class DBCFile(object):
         else:
             self.struct = None
 
-    def __process(self, data):
+    def __process_record(self, data):
         output = {}
-        for i in xrange(len(self.skeleton)):
-            t = self.skeleton[i]
-            if isinstance(t, String):
-                if data[i] == 0 or data[i] >= self.string_end:
-                    output[t.name] = unicode('', 'utf-8')
-                else:
-                    # String processing
-                    self.__file.seek(self.string_offset + data[i])
-                    s = ''
-                    while '\0' not in s:
-                        s += self.__file.read(128)
-                    s = s[:s.index('\0')]
-                    output[t.name] = unicode(s, 'utf-8')
+        i = 0
+        d = 0
+        while i < len(self.skeleton):
+            if isinstance(self.skeleton[i], Array):
+                temp = []
+                for t in self.skeleton[i].items:
+                    temp.append(self.__process_field(t, data[d])[0])
+                    d += 1
+                output[self.skeleton[i].name] = temp
             else:
-                output[t.name] = data[i]
+                output.update(self.__process_field(self.skeleton[i], data[d]))
+                d += 1
+            i += 1
+            
         return output
-   
+    
+    def __process_field(self, _type, data):
+        output = {}
+        name = _type.name if _type.name else 0
+        if isinstance(_type, String):
+            if data == 0 or data >= self.string_end:
+                output[name] = unicode('', 'utf-8')
+            else:
+                self.__file.seek(self.string_offset + data)
+                s = ''
+                while '\0' not in s:
+                    s += self.__file.read(128)
+                s = s[:s.index('\0')]
+                output[name] = unicode(s, 'utf-8')
+        else:
+            output[name] = data
+        return output
    

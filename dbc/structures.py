@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from dbcfile import DBCFile
-from dtypes import UInt32, String, Int32
+from dtypes import UInt32, String, Int32, Array
 
 class ChatProfanityDBC(DBCFile):
     skeleton = [
@@ -14,20 +14,6 @@ class GameTipsDBC(DBCFile):
     skeleton = [
         UInt32('ID'),
         String('RefName'),
-        String('Locale0'),
-        String('Locale1'),
-        String('Locale2'),
-        String('Locale3'),
-        String('Locale4'),
-        String('Locale5'),
-        String('Locale6'),
-        String('Locale7'),
-        String('Locale8'),
-        String('Locale9'),
-        String('Locale10'),
-        String('Locale11'),
-        String('Locale12'),
-        String('Locale13'),
-        String('Locale14'),
+        Array('Locale', String, 15),
         UInt32('LocaleMask'),
     ]

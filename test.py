@@ -3,5 +3,5 @@
 from dbc import *
 
 data = GameTipsDBC('GameTips.dbc').read()
-for tip in data:
-    print tip['RefName']
+
+print data[0]
