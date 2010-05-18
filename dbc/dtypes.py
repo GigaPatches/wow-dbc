@@ -29,3 +29,8 @@ class Array(Base):
     def __init__(self, name, _type, count):
         super(Array, self).__init__(name)
         self.items = [_type()] * count
+
+class Localization(Array):
+    def __init__(self, name):
+        super(Localization, self).__init__(name, String, 16)
+        self.items.append(UInt32())
