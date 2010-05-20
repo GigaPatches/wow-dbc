@@ -4,6 +4,7 @@
 """
 
 class Base(object):
+    "Base type, just includes a name"
     def __init__(self, name=''):
         self.name = name
 
@@ -24,6 +25,9 @@ class Float(Base):
 
 class String(Base):
     c = 'I'
+
+class PadByte(Base):
+    c = '4x'
 
 class Array(Base):
     def __init__(self, name, _type, count):
