@@ -3,3 +3,5 @@ Todo:
  * Implement Enum type
  * Implement Foreign Keys
  * Implment many missing DBC types
+ * Refactor DBCFile to support things like len, indexers, etc.
+ * Clean up Localization type to default to English (or whatever language is available)

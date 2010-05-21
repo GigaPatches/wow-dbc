@@ -6,28 +6,28 @@ from dtypes import *
 class ChatProfanityDBC(DBCFile):
     "A collection of all the words censored by the word filter (as a regex)"
     skeleton = [
-        Int32('id'),
-        String('word'),
-        Int32('lang'),
+        Int32('Id'),
+        String('Word'),
+        Int32('Lang'),
     ]
     
 class GameTipsDBC(DBCFile):
     "A collection of tips displayed during loading screens"
     skeleton = [
-        Int32('ID'),
+        Int32('Id'),
         Localization('Tip'),
     ]
 
 class SpamMessagesDBC(DBCFile):
     "A collection of Regular Expressions to match spam websites"
     skeleton = [
-        Int32('ID'),
+        Int32('Id'),
         String('RegEx'),
     ]
 
 class AchievementDBC(DBCFile):
     skeleton = [
-        Int32('ID'),
+        Int32('Id'),
         Int32('Faction'),
         Int32('Map'),
         Int32('Parent'),
@@ -46,7 +46,7 @@ class AchievementDBC(DBCFile):
 class AchievementCategoryDBC(DBCFile):
     "Achievement Categories"
     skeleton = [
-        Int32('ID'),
+        Int32('Id'),
         Int32('Parent'),
         Localization('Name'),
         UInt32('SortOrder'),
@@ -54,7 +54,7 @@ class AchievementCategoryDBC(DBCFile):
 
 class AchievementCriteriaDBC(DBCFile):
     skeleton = [
-        Int32('ID'),
+        Int32('Id'),
         Int32('AchievementID'),
         Int32('Type'),
         Array('Values', Int32, 6),
@@ -68,8 +68,8 @@ class AchievementCriteriaDBC(DBCFile):
     
 class CharTitlesDBC(DBCFile):
     skeleton = [
-        Int32('ID'),
-        Int32('Unknown'),
+        Int32('Id'),
+        PadByte(),#Int32('Unknown'),
         Localization('TitleMale'),
         Localization('TitleFemale'),
         Int32('SelectionIndex'),
@@ -83,11 +83,11 @@ class SpellDBC(DBCFile):
         UInt32('Mechanic'),
         UInt32('Attributes'),
         Array('AttributesEx', UInt32, 6), 
-        UInt32('Unk1'),
+        PadByte(),#UInt32('Unk1'),
         UInt32('Stances'),
-        UInt32('Unk2'),
+        PadByte(),#UInt32('Unk2'),
         UInt32('StancesNot'),
-        UInt32('Unk3'),
+        PadByte(),#UInt32('Unk3'),
         UInt32('Targets'),
         UInt32('TargetCreatureType'),
         UInt32('RequiresSpellFocus'),
@@ -177,7 +177,7 @@ class SpellDBC(DBCFile):
         UInt32('RuneCostID'),
         UInt32('SpellMissileID'),
         UInt32('PowerDisplayID'),
-        Array('Unk4', Float, 3),
+        PadByte(12),#Array('Unk4', Float, 3),
         UInt32('SpellDescriptionVariableID'),
         UInt32('SpellDifficultyID'),
     ]

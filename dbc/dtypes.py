@@ -27,7 +27,11 @@ class String(Base):
     c = 'I'
 
 class PadByte(Base):
-    c = '4x'
+    def __init__(self, size=4):
+        super(PadByte, self).__init__()
+        if size < 0:
+            size = 1
+        self.c = '%dx' % (size,)
 
 class Array(Base):
     def __init__(self, name, _type, count):

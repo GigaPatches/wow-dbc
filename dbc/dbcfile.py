@@ -5,6 +5,11 @@ from struct import Struct
 
 from dtypes import *
 
+class DBCRecord(object):
+    "A simple object to convert a dict to an object"
+    def __init__(self, d):
+        self.__dict__.update(d)
+
 class DBCFile(object):
     """
     Base representation of a DBC file.
@@ -14,7 +19,7 @@ class DBCFile(object):
 
     def __init__(self, filename, skele=None, verbose=False):
         self.filename = filename
-        self.verbose = verbose
+        self.verbose = verbose # Currently unused
         if not hasattr(self, 'skeleton'):
             self.skeleton = skele
         self.__create_struct()
@@ -59,7 +64,7 @@ class DBCFile(object):
         try:
             for i in xrange(records):
                 data = self.struct.unpack(f.read(record_size))
-                yield self.__process_record(data)
+                yield DBCRecord(self.__process_record(data))
         finally:
             f.close()
 
